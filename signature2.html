@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>签名</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no, viewport-fit=cover"/>
+    <link href="../../css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="../../css/iconcustom.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/mui.picker.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/mui.dtpicker.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/mui.poppicker.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/app.css" />
+    <link rel="stylesheet" type="text/css" href="../../components/inputComponent/inputComponent.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/imageview.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/mui.imageviewer.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #canvas {
+            border: 1px solid black;
+        }
+
+    </style>
+    <script src="../../js/mui.min.js"></script>
+    <script src="../../js/md5.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="../../js/core.js"></script>
+    <script type="text/javascript" src="../../js/city.data-3.js"></script>
+    <script type="text/javascript" src="../../js/vue.min.js"></script>
+    <script type="text/javascript" src="../../js/jquery-2.1.0.js"></script>
+    <script type="text/javascript" src="../../js/mui.picker.js"></script>
+    <script type="text/javascript" src="../../js/mui.picker.min.js"></script>
+    <script type="text/javascript" src="../../js/mui.poppicker.js"></script>
+    <script type="text/javascript" src="../../components/questionBoard/questionBoard.js"></script>
+    <script type="text/javascript" src="../../components/invalid.js"></script>
+    <script type="text/javascript" src="../../scientific/patient_info/patient_basic.js"></script>
+    <script type="text/javascript" src="../../js/projectCode.js"></script>
+    <script type="text/javascript" src="../../js/mui.imageViewer.js"></script>
+    <script type="text/javascript" src="../../js/mui.previewimage.js"></script>
+    <script type="text/javascript" src="../../js/mui.zoom.js"></script>
+</head>
+<body style="background-color: white;" class="mui-plus mui-statusbar mui-statusbar-offset">
+<div class="vue-space" style="padding: 2%">
+    <header class="mui-bar mui-bar-nav" style="background-color: #00bfd2;">
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color: whitesmoke"></a>
+        <h1 class="mui-title" style="color: whitesmoke;">住院医师签名</h1>
+    </header>
+    <div class="mui-content" style="background-color: white;">
+        <canvas id="canvas" width="610px"  height="280px"></canvas>
+        <div class="mui-button-row" style="margin-bottom: 1.5%">
+            <button id="clear" type="button" class="mui-btn mui-btn-success">清除</button>
+            <button id="imgInfo" type="button" class="mui-btn mui-btn-success">提交</button>
+        </div>
+    </div>
+
+    <div style="display: none">
+        线条粗细
+        <select id="selWidth">
+            <option value="2">2</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="9">9</option>
+        </select>
+        线条颜色
+        <select id="selColor">
+            <option value="black">black</option>
+            <option value="red">red</option>
+            <option value="blue">blue</option>
+            <option value="pink">pink</option>
+            <option value="orange">orange</option>
+        </select>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript">
+
+    mui.init({
+        beforeback: function () {
+            //获得父页面的webview
+            const list = plus.webview.currentWebview().opener();
+            //触发父页面的自定义事件(refresh),从而进行刷新
+            mui.fire(list, 'refresh');
+            //返回true,继续页面关闭逻辑
+            return true;
+        }
+    });
+
+    //1.获取canvas
+    var myCanvas = document.getElementById("canvas");
+    var canvasWidth = document.documentElement.clientWidth - 20;
+    var canvasHeight = 300;
+    myCanvas.setAttribute('width', canvasWidth);
+    myCanvas.setAttribute('height', canvasHeight);
+    //获取2d对象
+    var ctx = myCanvas.getContext("2d");
+    //清空画布
+    var clear = document.getElementById("clear");
+    clear.addEventListener("click", function () {
+        myCanvas.width = myCanvas.width;
+    });
+    //线条
+    var selWidth = document.getElementById("selWidth");
+    // 颜色
+    var selColor = document.getElementById("selColor");
+    // 保存签名
+    var imgInfo = document.getElementById("imgInfo");
+    // 保存的盒子
+    var imgs = document.getElementById("imgs");
+    //控制线条是否画
+    var isMouseMove = false;
+    //线条位置
+    var lastX, lastY;
+
+    var widthVal = selWidth[0].value, colorVal = selColor[0].value;
+    window.onload = function () {
+        initCanvas2();
+    };
+
+    //初始化
+    function initCanvas2() {
+        let offset = myCanvas.getBoundingClientRect();
+        var start = (e) => {
+            e.preventDefault();
+            isMouseMove = true;
+            drawLine(
+                e.changedTouches[0].clientX - offset.left,
+                e.changedTouches[0].clientY - offset.top,
+                false
+            );
+        };
+        let move = (e) => {
+            if (isMouseMove) {
+                drawLine(
+                    e.changedTouches[0].clientX - offset.left,
+                    e.changedTouches[0].clientY - offset.top,
+                    true
+                );
+            }
+        };
+        let end = (e) => {
+            isMouseMove = false;
+        };
+        let cancel = (e) => {
+            isMouseMove = false;
+        };
+
+        myCanvas.addEventListener('touchstart', start)
+        myCanvas.addEventListener('touchmove', move)
+        myCanvas.addEventListener('touchend', end)
+        myCanvas.addEventListener("touchcancel", cancel)
+    }
+    //画线
+    function drawLine(x, y, isT) {
+        if (isT) {
+            ctx.beginPath();
+            ctx.lineWidth = widthVal; //设置线宽状态
+            ctx.strokeStyle = colorVal; //设置线的颜色状态
+            ctx.lineCap = 'round'
+            ctx.lineJoin = "round";
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.closePath();
+        }
+        // 每次移动都要更新坐标位置
+        lastX = x;
+        lastY = y;
+    }
+
+    //线条粗细
+    function lineCrude() {
+        let activeIndex = selWidth.selectedIndex;
+        widthVal = selWidth[activeIndex].value;
+    }
+
+    //改变颜色
+    function setColor() {
+        let activeIndex = selColor.selectedIndex;
+        colorVal = selColor[activeIndex].value;
+    }
+
+    //验证canvas画布是否为空函数
+    function isCanvasBlank(canvas) {
+        var blank = document.createElement('canvas');//系统获取一个空canvas对象
+        blank.width = canvas.width;
+        blank.height = canvas.height;
+        return canvas.toDataURL() == blank.toDataURL();//比较值相等则为空
+    }
+
+    //保存图片
+    function saveImgInfo() {
+        if (isCanvasBlank(myCanvas)) {
+            mui.toast('签名不能为空！')
+        } else {
+            const images = myCanvas.toDataURL('image/png');
+            send('/base64Upload', {
+                base64: images
+            }, function (msg) {
+                let patient = getStorage('patient');
+                patient.p60 = msg.data.url;
+                send('/patient/editPatientBasic', patient, function(msg) {
+                    mui.toast("签名成功");
+                });
+                mui.back();
+            })
+        }
+    }
+
+    selWidth.addEventListener("change", lineCrude);
+    selColor.addEventListener("change", setColor);
+    imgInfo.addEventListener("click", saveImgInfo);
+</script>
+</html>
