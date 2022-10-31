@@ -83,10 +83,7 @@
 
     .mui-table-view-cell.mui-collapse-3 .mui-table-view {
         display: none;
-        margin-top: 11px;
-        margin-right: -15px;
-        margin-bottom: -11px;
-        margin-left: -15px;
+        margin: 11px -15px -11px;
         border: 0
     }
 
@@ -173,8 +170,8 @@
                     }
                 }
 
-                var canvasDiv = document.getElementById('canvasDiv');
-                var canvas = document.createElement('canvas');
+                const canvasDiv = document.getElementById('canvasDiv');
+                let canvas = document.createElement('canvas');
                 var canvasWidth = document.documentElement.clientWidth;
                 var canvasHeight = document.documentElement.clientHeight - 130;
                 document.addEventListener('touchmove', onDocumentTouchMove, false);
