@@ -189,8 +189,8 @@
                     canvas = G_vmlCanvasManager.initElement(canvas);
                 }
 
-                var context = canvas.getContext("2d");
-                var img = new Image();
+                const context = canvas.getContext("2d");
+                const img = new Image();
                 img.src = "./a.jpg";
                 img.onload = function () {
                     var ptrn = context.createPattern(img, 'no-repeat');
