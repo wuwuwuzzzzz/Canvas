@@ -92,30 +92,30 @@
     //1.获取canvas
     const myCanvas = document.getElementById("canvas");
     const canvasWidth = document.documentElement.clientWidth - 20;
-    var canvasHeight = 300;
+    const canvasHeight = 300;
     myCanvas.setAttribute('width', canvasWidth);
     myCanvas.setAttribute('height', canvasHeight);
     //获取2d对象
-    var ctx = myCanvas.getContext("2d");
+    const ctx = myCanvas.getContext("2d");
     //清空画布
-    var clear = document.getElementById("clear");
+    const clear = document.getElementById("clear");
     clear.addEventListener("click", function () {
         myCanvas.width = myCanvas.width;
     });
     //线条
-    var selWidth = document.getElementById("selWidth");
+    const selWidth = document.getElementById("selWidth");
     // 颜色
-    var selColor = document.getElementById("selColor");
+    const selColor = document.getElementById("selColor");
     // 保存签名
-    var imgInfo = document.getElementById("imgInfo");
+    const imgInfo = document.getElementById("imgInfo");
     // 保存的盒子
-    var imgs = document.getElementById("imgs");
+    const imgs = document.getElementById("imgs");
     //控制线条是否画
-    var isMouseMove = false;
+    let isMouseMove = false;
     //线条位置
-    var lastX, lastY;
+    let lastX, lastY;
 
-    var widthVal = selWidth[0].value, colorVal = selColor[0].value;
+    let widthVal = selWidth[0].value, colorVal = selColor[0].value;
     window.onload = function () {
         initCanvas2();
     };
@@ -123,7 +123,7 @@
     //初始化
     function initCanvas2() {
         let offset = myCanvas.getBoundingClientRect();
-        var start = (e) => {
+        const start = (e) => {
             e.preventDefault();
             isMouseMove = true;
             drawLine(
@@ -185,7 +185,7 @@
 
     //验证canvas画布是否为空函数
     function isCanvasBlank(canvas) {
-        var blank = document.createElement('canvas');//系统获取一个空canvas对象
+        const blank = document.createElement('canvas');//系统获取一个空canvas对象
         blank.width = canvas.width;
         blank.height = canvas.height;
         return canvas.toDataURL() == blank.toDataURL();//比较值相等则为空
