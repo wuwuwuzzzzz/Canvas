@@ -162,6 +162,8 @@
         },
         methods: {
             canvasInit() {
+                let paint;
+
                 function onDocumentTouchMove(event) {
                     if (event.touches.length == 1) {
                         event.preventDefault();
@@ -248,7 +250,6 @@
                 const clickX = [];
                 const clickY = [];
                 const clickDrag = [];
-                var paint;
 
                 function addClick(x, y, dragging) {
                     clickX.push(x);
