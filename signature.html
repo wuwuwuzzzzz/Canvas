@@ -27,8 +27,6 @@
 
 <script type="text/javascript">
 
-
-
     vm = new Vue({
         el: ".vue-space",
         data: {
@@ -50,7 +48,7 @@
 
                 const canvasDiv = document.getElementById('canvasDiv');
                 let canvas = document.createElement('canvas');
-                var canvasWidth = document.documentElement.clientWidth;
+                const canvasWidth = document.documentElement.clientWidth;
                 var canvasHeight = document.documentElement.clientHeight - 130;
                 document.addEventListener('touchmove', onDocumentTouchMove, false);
 
