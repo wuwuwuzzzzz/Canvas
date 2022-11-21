@@ -77,7 +77,7 @@
 
                 canvas.addEventListener("touchstart", function (e) {
                     const mouseX = e.pageX - this.offsetLeft;
-                    var mouseY = e.pageY - this.offsetTop;
+                    const mouseY = e.pageY - this.offsetTop;
                     paint = true;
                     addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
                     redraw();
