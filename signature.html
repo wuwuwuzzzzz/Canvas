@@ -171,16 +171,6 @@
                         mui.back();
                     })
                 });
-            },
-
-            /**
-             * 添加签名
-             */
-            addAutograph(url) {
-                this.patient.p59 = url;
-                send('/patient/editPatientBasic', this.patient, function(msg) {
-                    mui.toast("签名成功");
-                });
             }
         }
     })
