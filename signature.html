@@ -162,15 +162,6 @@
                     canvas.width = canvas.width;
                 });
 
-                submit.addEventListener("click", function () {
-                    $("#qmimg").attr("src", canvas.toDataURL("image/png"));
-                    send('/base64Upload', {
-                        base64: canvas.toDataURL("image/png")
-                    }, function (msg) {
-                        vm.addAutograph(msg.data.url);
-                        mui.back();
-                    })
-                });
             }
         }
     })
